@@ -32,12 +32,16 @@ func Calculate(w http.ResponseWriter, r *http.Request) {
 
 	data := make([]byte, 200)
 	n, err := r.Body.Read(data)
+
 	if isInternalError(w, err) {
 		return
 	}
 
 	err = json.Unmarshal(data[:n], &request)
-	if isInternalError(w, err) {
+	if err != nil {
+		response.Error = "Invalid body"
+		w.WriteHeader(http.StatusBadRequest)
+		sendResponse(w, response)
 		return
 	}
 
