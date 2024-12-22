@@ -19,8 +19,12 @@ type Response struct {
 }
 
 func Calculate(w http.ResponseWriter, r *http.Request) {
+	response := Response{}
+
 	if r.Method != "POST" {
-		fmt.Fprintln(w, "only POST allowed")
+		response.Error = "Wrong method"
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		sendResponse(w, response)
 		return
 	}
 
@@ -39,7 +43,6 @@ func Calculate(w http.ResponseWriter, r *http.Request) {
 
 	result, err := calc.Calc(request.Expression)
 
-	response := Response{}
 	if err != nil {
 		response.Error = err.Error()
 		w.WriteHeader(http.StatusUnprocessableEntity)
