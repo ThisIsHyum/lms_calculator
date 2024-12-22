@@ -27,7 +27,7 @@ func Answer(tokens []token) (float64, error) {
 			exp = tn1 * tn2
 		case divide:
 			if tn1 == 0 {
-				return 0, fmt.Errorf("divided on zero")
+				return 0, fmt.Errorf("can't divide by zero")
 			}
 			exp = tn2 / tn1
 		}

@@ -26,7 +26,7 @@ func toToken(str string, isNum *bool, prevToken *token) (t token, err error, add
 		_, err := strconv.Atoi(str)
 		if err != nil {
 			token.String = "error"
-			return token, fmt.Errorf("error"), false
+			return token, fmt.Errorf("expression has forbidden characters"), false
 		}
 		if *isNum {
 			prevToken.String = prevToken.String + str
@@ -37,7 +37,7 @@ func toToken(str string, isNum *bool, prevToken *token) (t token, err error, add
 		*(isNum) = true
 	} else {
 		if !*(isNum) && prevToken.TokenType != brace_end && tokenType != brace_start {
-			return token, fmt.Errorf("two operations attract"), false
+			return token, fmt.Errorf("two operations in a row"), false
 		}
 		token.TokenType = tokenType
 		*(isNum) = false
@@ -62,7 +62,7 @@ func tokenize(expression string) ([]token, error) {
 	}
 	tokentype := tokens[len(tokens)-1].TokenType
 	if tokentype != number && tokentype != brace_end && tokentype != brace_start {
-		return tokens, fmt.Errorf("error")
+		return tokens, fmt.Errorf("tokenization error")
 	}
 	return tokens, nil
 }
