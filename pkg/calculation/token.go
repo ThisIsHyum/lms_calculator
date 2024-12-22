@@ -62,7 +62,7 @@ func tokenize(expression string) ([]token, error) {
 	}
 	tokentype := tokens[len(tokens)-1].TokenType
 	if tokentype != number && tokentype != brace_end && tokentype != brace_start {
-		return tokens, fmt.Errorf("tokenization error")
+		return tokens, fmt.Errorf("expression is wrong")
 	}
 	return tokens, nil
 }
