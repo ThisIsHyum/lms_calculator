@@ -1,8 +1,15 @@
 package main
 
-import application "github.com/ThisIsHyum/lms_calculator/internal/app"
+import (
+	"fmt"
+
+	application "github.com/ThisIsHyum/lms_calculator/internal/app"
+)
 
 func main() {
 	app := application.New()
-	app.Run()
+	err := app.Run()
+	if err != nil {
+		fmt.Println("error: " + err.Error())
+	}
 }
