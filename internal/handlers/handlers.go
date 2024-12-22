@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -57,6 +58,9 @@ func sendResponse(w http.ResponseWriter, response Response) {
 }
 
 func isInternalError(w http.ResponseWriter, err error) bool {
+	if err == io.EOF {
+		return false
+	}
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		sendResponse(w, Response{Error: "Internal server error"})
