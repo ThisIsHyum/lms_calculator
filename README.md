@@ -34,7 +34,7 @@ go run cmd/calc_service/. -ip 192.168.0.100 -port 8080
 ```sh
 git clone https://github.com/ThisIsHyum/lms_calculator
 cd lms_calculator
-sudo go run cmd/calc_service/.
+sudo go run ./cmd/calc_service/.
 ```
 
 ## Использование
