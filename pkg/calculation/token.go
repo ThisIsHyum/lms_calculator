@@ -64,5 +64,28 @@ func tokenize(expression string) ([]token, error) {
 	if tokentype != number && tokentype != brace_end && tokentype != brace_start {
 		return tokens, fmt.Errorf("expression is wrong")
 	}
+	if err := isBalanced(tokens); err != nil {
+		return tokens, err
+	}
 	return tokens, nil
+}
+
+func isBalanced(tokens []token) error {
+	stack := Stack{}
+
+	for _, token := range tokens {
+		switch token.TokenType {
+		case brace_start:
+			stack.Push(token)
+		case brace_end:
+			if len(stack.items) != 0 {
+				if stack.Top().TokenType == brace_end {
+					stack.Pop()
+				} else {
+					return nil
+				}
+			}
+		}
+	}
+	return fmt.Errorf("brace error")
 }

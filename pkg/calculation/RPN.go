@@ -25,7 +25,7 @@ func toRPN(tokens []token) ([]token, error) {
 				s = append(s, stack.Pop())
 			}
 			if !brace_obtained {
-				return s, fmt.Errorf("brace not closed")
+				return s, fmt.Errorf("brace error")
 			}
 			continue
 		}
