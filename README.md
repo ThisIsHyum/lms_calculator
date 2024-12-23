@@ -18,10 +18,15 @@ git clone https://github.com/ThisIsHyum/lms_calculator
 cd lms_calculator
 ```
 2. запустите проект(с root-правами, если используется порт со значением до 1024)
+- **Linux**
 ```sh
 sudo go run cmd/calc_service/.
 ```
-
+- **Windows**
+```sh
+# запустите терминал от имени администратора
+go run cmd/calc_service/.
+```
 ### параметры
 
 Для того, чтобы присвоить айпи и порту свои значения, необходимо использовать флаги ip и port:
@@ -34,7 +39,7 @@ go run cmd/calc_service/. -ip 192.168.0.100 -port 8080
 ```sh
 git clone https://github.com/ThisIsHyum/lms_calculator
 cd lms_calculator
-sudo go run ./cmd/calc_service/.
+go run ./cmd/calc_service/. -port 8080
 ```
 
 ## Использование
