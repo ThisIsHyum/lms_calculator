@@ -151,6 +151,7 @@ docker-compose up
       ]
     }
     ```
+---
 3. получение выражения
 
 - **url-путь**: `/api/v1/expressions/:id`
