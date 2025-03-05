@@ -44,7 +44,7 @@ func toToken(str string, isNum *bool, prevToken *token) (t token, err error, add
 	}
 	return token, nil, false
 }
-func tokenize(expression string) ([]token, error) {
+func Tokenize(expression string) ([]token, error) {
 	var isNum bool
 	var prevToken token
 	tokens := []token{}
@@ -86,6 +86,9 @@ func isBalanced(tokens []token) error {
 				}
 			}
 		}
+	}
+	if len(stack.items) == 0 {
+		return nil
 	}
 	return fmt.Errorf("brace error")
 }

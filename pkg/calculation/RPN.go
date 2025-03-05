@@ -5,7 +5,7 @@ import (
 	"slices"
 )
 
-func toRPN(tokens []token) ([]token, error) {
+func ToRPN(tokens []token) ([]token, error) {
 	s := []token{}
 	stack := Stack{}
 	for _, token := range tokens {

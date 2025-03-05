@@ -1,12 +1,35 @@
 package config
 
 import (
-	"flag"
+	"fmt"
+
+	"github.com/cristalhq/aconfig"
+	"github.com/cristalhq/aconfig/aconfigtoml"
 )
 
-var Ip = flag.String("ip", "", "ip of api")
-var Port = flag.String("port", "80", "port of api")
+type Cfg struct {
+	Ip string `default:"localhost"`
+	Port string `default:"80"`
+
+	TimeAdditionMs int `default:"1"`
+	TimeSubtractionMs int `default:"1"`
+	TimeMultiplicationsMs int `default:"1"`
+	TimeDivisionsMs int `default:"1"`
+
+	ComputingPower int `default:"1"`
+}
+
+var Config Cfg
 
 func init() {
-	flag.Parse()
+	loader := aconfig.LoaderFor(&Config, aconfig.Config{
+		Files: []string{"/config.toml", "config.toml"},
+		FileDecoders: map[string]aconfig.FileDecoder{
+			".toml": aconfigtoml.New(),
+		},
+	})
+	if err := loader.Load(); err != nil {
+		panic(err)
+	}
+	fmt.Println(Config.ComputingPower)
 }

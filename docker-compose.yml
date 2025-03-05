@@ -1,0 +1,21 @@
+services:
+  orchesrator:
+    build: .
+    hostname: orchesrator
+    entrypoint: "./orchestrator"
+    ports:
+      - 80:80
+    configs:
+      - config.toml
+  agent:
+    build: .
+    entrypoint: "./agent"
+    depends_on:
+      - orchesrator
+    configs:
+      - config.toml
+    restart: always
+
+configs:
+  config.toml:
+    file: ./config.toml

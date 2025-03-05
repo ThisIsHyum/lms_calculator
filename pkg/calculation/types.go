@@ -19,16 +19,12 @@ func (t tokenType) getPriority() int {
 	case number:
 		return 0
 	case brace_start:
-		return -5
-	case brace_end:
 		return -4
-	case plus:
+	case brace_end:
+		return -5
+	case plus, minus: 
 		return 1
-	case minus:
-		return 1
-	case multiply:
-		return 2
-	case divide:
+	case multiply, divide:
 		return 2
 	}
 	return -1

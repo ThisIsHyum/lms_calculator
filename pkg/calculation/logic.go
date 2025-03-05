@@ -1,11 +1,11 @@
 package calc
 
 import (
-	"fmt"
-	"strconv"
+	"github.com/ThisIsHyum/lms_calculator/internal/taskmanager"
 )
 
-func Answer(tokens []token) (float64, error) {
+func ToTasks(tokens []token) taskmanager.Tasks {
+	var tasks = taskmanager.Tasks{}
 	stack := Stack{}
 	for _, t := range tokens {
 		if t.TokenType == number {
@@ -14,45 +14,13 @@ func Answer(tokens []token) (float64, error) {
 		}
 		t1 := stack.Pop()
 		t2 := stack.Pop()
-
-		tn1, _ := strconv.ParseFloat(t1.String, 64)
-		tn2, _ := strconv.ParseFloat(t2.String, 64)
-		var exp float64 = 0
-		switch t.TokenType {
-		case plus:
-			exp = tn1 + tn2
-		case minus:
-			exp = tn2 - tn1
-		case multiply:
-			exp = tn1 * tn2
-		case divide:
-			if tn1 == 0 {
-				return 0, fmt.Errorf("can't divide by zero")
-			}
-			exp = tn2 / tn1
-		}
-
+		task := tasks.Add(t1.String, t2.String, t.String)
 		stack.Push(
 			token{
 				TokenType: number,
-				String:    strconv.FormatFloat(exp, 'f', 2, 64),
+				String:    task.String(),
 			},
 		)
 	}
-	ans, _ := strconv.ParseFloat(stack.Top().String, 64)
-	return float64(ans), nil
-}
-func Calc(expression string) (float64, error) {
-	if expression == "" {
-		return 0, fmt.Errorf("expression is empty")
-	}
-	tokens, err := tokenize(expression)
-	if err != nil {
-		return 0, err
-	}
-	rpn, err := toRPN(tokens)
-	if err != nil {
-		return 0, err
-	}
-	return Answer(rpn)
+	return tasks
 }
