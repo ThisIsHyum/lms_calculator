@@ -10,28 +10,48 @@
 ```sh
 git clone https://github.com/ThisIsHyum/lms_calculator
 ```
+3. войдите в папку репозитория
+```sh
+cd lms_calculator
+```
+4. установите docker на компьютер, если он отсутствует
+5. соберите проект
+- **Linux**
+```sh
+sudo docker-compose build
+```
+- **Windows**
+```sh
+docker-compose build
+```
 
 ## Запуск
-
 1. войдите в папку репозитория
 ```sh
 cd lms_calculator
 ```
-2. запустите проект(с root-правами, если используется порт со значением до 1024)
+2. запустите контейнеры(должен быть установлен docker)
 - **Linux**
 ```sh
-sudo go run cmd/calc_service/.
+sudo docker-compose up
 ```
 - **Windows**
 ```sh
-# запустите терминал от имени администратора
-go run cmd/calc_service/.
+docker-compose up
 ```
 ### параметры
 
-Для того, чтобы присвоить айпи и порту свои значения, необходимо использовать флаги ip и port:
-```sh
-go run cmd/calc_service/. -ip 192.168.0.100 -port 8080
+Для того, чтобы изменить настройки, измените файл config.toml:
+```toml
+ip="localhost" # айпи
+port=80 # порт
+
+time_addition_ms=1 # длительность выполнения сложения в миллисекундах
+time_subtraction_ms=1 # длительность выполнения вычитания в миллисекундах
+time_multiplications_ms=1 # длительность выполнения умножения в миллисекундах
+time_divisions_ms=1 # длительность выполнения деления в миллисекундах
+
+ComputingPower=1 # количество горутин(агент)
 ```
 
 ## Запуск и установка
@@ -39,27 +59,28 @@ go run cmd/calc_service/. -ip 192.168.0.100 -port 8080
 ```sh
 git clone https://github.com/ThisIsHyum/lms_calculator
 cd lms_calculator
-go run ./cmd/calc_service/. -port 8080
+docker-compose build
+docker-compose up
 ```
 
 ## Использование
 
-- **метод**: `POST`
-  
-- url-путь: `/api/v1/calculate`
-  
-- заголовок: `Content-Type: application/json`
-  
-- тело запроса:
+1. создание выражения
+- **url-путь**: `POST`
+- **метод**: `/api/v1/calculate`
+- **заголовок**: `Content-Type: application/json`
+- **тело запроса**:
 ```json
 {
   "expression": "выражение"
 }
 ```
+- **тело успешного ответа**:
+```created```
 
-### Ответы
-1. **Успешный запрос**
-    - **Статус**: `200`
+### Примеры
+1. **Выражение принято для вычисления**
+    - **Статус**: `201`
     - **Пример запроса**
     ```sh
     curl --location 'http://localhost:8080/api/v1/calculate' \
@@ -69,11 +90,7 @@ go run ./cmd/calc_service/. -port 8080
     }'
     ```
     - **Пример ответа**
-    ```json
-    {
-      "result": "6"
-    }
-    ```
+    ```created```
 2. **Некорректное выражение**
     - **Статус**: `422`
     - **Пример запроса**
@@ -85,20 +102,102 @@ go run ./cmd/calc_service/. -port 8080
     }'
     ```
     - **Пример ответа**
-    ```json
+    ```error: brace error```
+
+---
+2. получение списка выражений
+
+- **url-путь**: `/api/v1/expression`
+- **метод**: `GET`
+- **тело успешного ответа**:
+```json
+{
+  "expressions": [
     {
-      "error": "bracket not closed"
+      "id": "айди выражения",
+      "status": "статус вычисления выражения",
+      "result": "результат выражения"
+    },
+    {
+      "id": "айди выражения",
+      "status": "статус вычисления выражения",
+      "result": "результат выражения"
     }
-    ```
-3. **Некорректный метод**
-    - **Статус**: `405`
+  ]
+}
+```
+
+### Примеры
+1. **Успешный запрос**
+    - **Статус**: `200`
     - **Пример запроса**
     ```sh
-    curl --location 'http://localhost:8080/api/v1/calculate'
+    curl --location 'http://localhost:8080/api/v1/expressions'
     ```
     - **Пример ответа**
     ```json
     {
-      "error": "Wrong method"
+      "expressions": [
+        {
+          "id": 1,
+          "status": "solved",
+          "result": 4
+        },
+        {
+          "id": 2,
+          "status": "not resolved",
+          "result": 0
+        }
+      ]
     }
     ```
+3. получение выражения
+
+- **url-путь**: `/api/v1/expressions/:id`
+- **метод**: `GET`
+
+- **тело успешного ответа**:
+```json
+{
+  "expression":
+    {
+      "id": "айди выражения",
+      "status": "статус вычисления выражения",
+      "result": "результат выражения"
+    }
+}
+```
+
+### Примеры
+1. **Успешный запрос**
+    - **Статус**: `200`
+    - **Пример запроса**
+     ```sh
+    curl --location 'http://localhost:8080/api/v1/expressions/1'
+    ```
+    - **Пример ответа**
+    ```json
+    {
+      "expression":
+        {
+          "id": 1,
+          "status": "solved",
+          "result": 4
+        }
+    }
+    ```
+2. **Нет задачи**
+    - **Статус**: `404`
+    - **Пример запроса**
+     ```sh
+    curl --location 'http://localhost:8080/api/v1/expressions/3'
+    ```
+    - **Пример ответа**
+    ```Not found```
+
+## Схема работы
+```
+|-------|  POST/GET  |--------------|              POST/GET                 |-------|
+| user  | ---------> | orchestrator | <------------------------------------ | agent |
+|-------|            |--------------|  computingPower requests in 1 second  |-------|
+```
