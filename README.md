@@ -200,5 +200,5 @@ docker-compose up
 ```
 |-------|  POST/GET  |--------------|              POST/GET                 |-------|
 | user  | ---------> | orchestrator | <------------------------------------ | agent |
-|-------|            |--------------|  computingPower requests in 1 second  |-------|
+|-------|            |--------------|  [computingPower] requests in 1 second  |-------|
 ```
