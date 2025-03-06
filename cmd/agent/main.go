@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	app := agent.New(config.Config.Ip, config.Config.Port, config.Config.ComputingPower)
+	app := agent.New("orchesrator", config.Config.Port, config.Config.ComputingPower)
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
 	}
