@@ -12,9 +12,9 @@ type App struct {
 	computingPower int
 }
 
-func New(ip, port string, computingPower int) App {
+func New(computingPower int) App {
 	return App{
-		client: client.New(ip + ":" + port),
+		client: client.New("orchestrator:8080"),
 		computingPower: computingPower,
 	}
 }

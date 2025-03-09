@@ -1,17 +1,17 @@
 services:
-  orchesrator:
+  orchestrator:
     build: .
-    hostname: orchesrator
+    hostname: orchestrator
     entrypoint: "./orchestrator"
     ports:
-      - 80:80
+      - 8080:8080
     configs:
       - config.toml
   agent:
     build: .
     entrypoint: "./agent"
     depends_on:
-      - orchesrator
+      - orchestrator
     configs:
       - config.toml
     restart: always

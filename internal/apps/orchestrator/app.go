@@ -2,19 +2,13 @@ package orchestrator
 
 import (
 	"github.com/ThisIsHyum/lms_calculator/internal/apps/orchestrator/handlers"
-	"github.com/ThisIsHyum/lms_calculator/internal/config"
 	"github.com/labstack/echo/v4"
 )
 
-type App struct {
-	Ip   string
-	Port string
-}
+type App struct {}
 
 func New() App {
-	return App{
-		Port: config.Config.Port,
-	}
+	return App{}
 }
 
 func (a App) Run() error {
@@ -28,5 +22,5 @@ func (a App) Run() error {
 	e.POST("/internal/task", handlers.SendResult)
 
 
-	return e.Start(":" + a.Port)
+	return e.Start(":8080")
 }
